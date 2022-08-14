@@ -1,0 +1,27 @@
+{
+  "name": "plextech-atlassian-onboarding",
+  "version": "0.0.1",
+  "description": "PlexTech-Atlassian Slack app onboarding",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "@apollo/client": "^3.6.9",
+    "@slack/bolt": "^3.12.1",
+    "@slack/oauth": "^2.5.4",
+    "axios": "^0.27.2",
+    "dotenv": "^16.0.1"
+  },
+  "engines": {
+    "node": "16.x"
+  },
+  "repository": {
+    "url": "https://glitch.com/edit/#!/bolt-app-template"
+  },
+  "license": "MIT",
+  "keywords": [
+    "node",
+    "express"
+  ]
+}
