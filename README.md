@@ -1,14 +1,10 @@
 # Compass/Slack Onboarding Project \_\_\_\ ゜o゜)ノ\_\_\_
 
-Compass is a new Atlassian service that simplifies DevOps organization. Individuals are grouped into teams and each team is responsible for some number of components. Components are either the team's services, libraries, or applications.
+As you know, this semester, we will be working on a Slack app for Atlassian Compass. Compass is a new Atlassian service that simplifies DevOps organization. Individuals are grouped into teams and each team is responsible for some number of components. Components are either the team's services, libraries, or applications. Metrics and scorecards can be set for a component to track system health and measures can be set in place to promote scale engineering best practices and tame software sprawl. You are encouraged to read more about compass [here](https://www.atlassian.com/software/compass).
 
-Slack apps are capable of listening to events, messages, and commands and are capable of posting material within a Slack workspace.
+As an overview, Slack apps are capable of listening to events, messages, and commands and are capable of posting material within a Slack workspace. For Slack app development, we will use Bolt. [Bolt](https://slack.dev/bolt) is the framework that lets you build JavaScript-based Slack apps.
 
-For Slack app development, we will use Bolt. [Bolt](https://slack.dev/bolt) is the framework that lets you build JavaScript-based Slack apps.
-
-Think of Slack apps as browser extensions that, instead of communicating with a browser, communicate with Slack's servers which then updates Slack workspaces for you. This project will give you a simple introduction into creating Bolt apps and deploying them to a live server that can listen to requests from a workspace and respond with information from Compass.
-
-Note that Slack apps are hosted on an external server and do not run locally on a user's computer.
+For some context, think of Slack apps as browser extensions that, instead of communicating with a browser, communicate with Slack's servers which then updates Slack workspaces for you. (Slack apps are also hosted externally and do not run within your workspace. I.e., they are hosted on an external server and do not run locally on a user's computer.) This project will give you a simple introduction into creating Bolt apps and deploying them to a live server that can listen to requests from a workspace and respond with information from Compass.
 
 If you'd like to read more about Bolt, you can go to the [Getting Started guide](https://api.slack.com/start/building/bolt) or the [Bolt documentation](https://slack.dev/bolt). Most of this project was compiled from the Getting Started guide, so performing this onboarding task alone will give you a decent introduction to Bolt and creating Slack apps.
 
@@ -20,17 +16,17 @@ You can learn the basics of JavaScript [here](https://www.youtube.com/watch?v=W6
 
 For promises, please try to use async/await when possible and not callback functions. Please avoid the use of top-level awaits, as that's a surefire way to shoot yourself in the foot.
 
-You should also be somewhat familiar with writing web servers using Node.js. If you need to install node, please visit [here](https://nodejs.org/en/download/). You do not need to know popular web development frameworks like React, Express, etc.
+You should also be somewhat familiar with writing web servers using Node.js. If you need to install Node, please visit [here](https://nodejs.org/en/download/). You do not need to know popular web development frameworks like React, Express, etc to complete this project.
 
 ## Project Description
 
-For this project, you will create a listener for the command `/compass {ari}`, which gets the Compass component name for the corresponding Atlassian ARI (ARI stands for "Atlassian Resource Identifier" and is a unique ID for an Atlassian object). Once you complete this project, you should be able to enter `/compass {ari}` into a Slack channel with a component ARI from compass and get the component's name.
+For this project, you will create a listener for the slash command `/compass {ari}`, which gets the Compass component name for the corresponding Atlassian ARI (ARI stands for "Atlassian Resource Identifier" and is a unique ID for an Atlassian object) and sends it back to the Slack channel. Once you complete this project, you should be able to enter `/compass {ari}` into a Slack channel with a component ARI from Compass and get the component's name without ever having to leave Slack!
 
 ## Setup: Compass
 
-As mentioned earlier, Compass is Atlassian's new DevOps service currently in beta stage of development. To create a new Compass site, go to https://www.atlassian.com/software/compass and select the "Get it free" button to the right of the Compass banner. Use your Berkeley email and call your site {YOUR FIRST NAME}-compass-test.
+As mentioned earlier, Compass is Atlassian's new DevOps service currently in beta stage of development. To create a new Compass site, go to https://www.atlassian.com/software/compass and select the "Get it free" button to the right of the Compass banner. Use your Berkeley email and call your site {YOUR FIRST NAME}-compass-onboard.
 
-You will then be asked to create a component. For consistency, let's also call this {YOUR FIRST NAME}-Compass-Test and make it a service. This is all you'll need to set up to continue with this project, but you are encouraged to explore the rest of Compass in your free time.
+You will then be asked to create a component. We will be using this component's ARI for testing in Slack. For consistency, let's also call this {YOUR FIRST NAME}-Compass-Onboard and make it a service. This is all you'll need to set up to continue with this project, but you are encouraged to explore the rest of Compass in your free time.
 
 ## Setup: Slack
 
@@ -41,13 +37,15 @@ To create a Slack workspace, it is recommended that you have the desktop version
 1. Underneath your workspace icons, click the "+" icon to add a workspace.
 2. Select "Create a new workspace".
 3. Enter your Berkeley email and verification code.
-4. Please name your Slack workspace "{YOUR FIRST NAME}-Compass-Test". You can skip adding teammates.
+4. Please name your Slack workspace "{YOUR FIRST NAME}-Compass-Onboard". You can skip adding teammates.
+
+You will be testing your Slack slash commands within this workspace.
 
 To create a Slack app, go to https://api.slack.com/apps.
 
 1. Click "Create New App"
 2. Select "From scratch"
-3. Name your app "{YOUR FIRST NAME}-Compass-Test" and select the workspace you just created.
+3. Name your app "{YOUR FIRST NAME}-Compass-Onboard" and select the workspace you just created.
 
 ### Requesting Scopes
 
@@ -66,13 +64,24 @@ Install your own app by selecting the "Install App" button at the top of the OAu
 
 ## Project Structure
 
-Now it's time to start writing some code! The starter code for this project can be found at https://github.com/adamzuyang/atlassian-onboarding-task. Go ahead and clone this repository using Git.
+Now it's time to start writing some code! The Node.js starter code for this project can be found at https://github.com/adamzuyang/atlassian-onboarding-task. Go ahead and clone this repository using Git.
 
 Below summarizes the project's starter code:
 
 - `app.js` contains the primary Bolt app. It imports the Bolt package (`@slack/bolt`) and starts the Bolt app's server. It's where you'll add your app's listeners.
-- `.env` is where you'll put your Slack app's authorization token and signing secret as well as your Compass authorization token. Do not push this to any git repository. Later, when you deploy your code, you will add the environment variables to Heroku directly.
+- `package.json` and `package-lock.json` are present in almost all Node apps. They define your app's dependencies so that you can install them into your Bolt app. When you install your dependencies, they are saved within the `node_modules` directory.
 - The `examples` folder contains a couple of other sample app commands and events that you can peruse to your liking. They show off a few platform features that your app may want to use.
+
+Before you get started, first create a file called `.env` in the root directory of your project and paste the following code:
+
+```
+SLACK_BOT_TOKEN=
+SLACK_SIGNING_SECRET=
+COMPASS_TOKEN=
+COMPASS_USERNAME=
+```
+
+You will store your Compass and Slack access tokens within this file. While `.env` is part of `.gitignore`, be very careful to not push your `.env` file to Github.
 
 It doesn't matter too much how you decide to organize your code, since this is a fairly small onboarding project. However, it's good to keep in mind development best practices, such as not pushing the contents of your `.env` file, not hard-coding access tokens, and not using top-level awaits.
 
@@ -228,3 +237,29 @@ Finally, use your experience gained writing the `/echo` slash command to create 
 4. Create the slash command within the Slack App by modifying the "Slash Commands" sidebar. (Be careful here, your ngrok domain might have changed.)
 
 To test your work, start up your app using `npm start` and enter `/compass {ARI}` in any channel within your workspace (e.g., `/compass ari:cloud:compass:2103eeed-75f8-4dc7-ab7d-94cac8de5281:component/0f67fdbc-3f54-49b0-843f-cba4842b95b3/cb33c7da-65b4-4410-a095-a136d40d017a`). If everything works, you should get your Compass component's name as a reply.
+
+Note that each time you restart ngrok, you will have to update the slash command's domain within your Slack app.
+
+## Submitting Your Work
+
+After you have verified the functionality of your `/compass` command, go ahead and submit your work. To do so, create a remote Github repository called {Your first name}-Compass-Onboard and push your code.
+
+## Deploying Your App to Heroku
+
+**Note**: A demo will also be part of your submission, so make sure to complete this portion of the project as well.
+
+While ngrok is great for testing changes locally, it can be very tedious to have to constantly update your slash command URL within the Slack app every time you restart ngrok. To get around this issue, and give you a bit of real-world experience with code deployments, we will make use of Heroku.
+
+Heroku is a container-based cloud platform as a service (PaaS) capable of deploying, managing, and scaling modern apps. While Heroku wouldn't be my first choice to host a large-scale enterprise service (I'd use something like AWS instead), it is minimalistic and easy to use. To get started, go to heroku.com and sign up for a new account using your Berkeley email.
+
+Once you enter the dashboard, go ahead and click "New" and create a new app called {Your first name}-compass-onboard.
+
+Before we deploy your app from Github, since you (should) have not pushed your `.env` file to your Github repository, we first have to ensure that your Heroku app has the right config variables to access Slack and Atlassian. To do so, go to the "Settings" tab on your Heroku app dashboard and copy your key-value pairs from your `.env` file to Heroku's "Config Vars". Your Bolt app can noww access these variables through `process.env`.
+
+Assuming that you've already pushed your code to Github for submission, deployment is extremely simple. Within your app's dashboard go to the "Deploy" tab and select "Github" for your deployment method. After that, all you have to do is connect Heroku to your repository and click "Deploy Branch" under "Manual deploy".
+
+To view the build/deployment logs and ensure that your app is running, select "More" and "View logs".
+
+To ensure that Slack hits your Bolt app's endpoint (which is now hosted on Heroku), update your slash command's Request URL to your Heroku URL. To get your heroku URL, click "Open app" on your Heroku app's dashboard. Don't worry if your browser says that your page can't be found.
+
+Finally, try out your `/compass` command in your Slack workspace to see if everything still works. Congratulations! Your app is now hosted in the cloud!
